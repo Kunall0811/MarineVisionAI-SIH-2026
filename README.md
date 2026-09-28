@@ -1,84 +1,819 @@
-# MarineVision AI — SIH26057
+# AI-Powered Automated Underwater Marine Debris & Anomaly Detection System
 
-End-to-end Side-Scan Sonar marine anomaly console with MongoDB, Cesium globe, historical references, AI training/evaluation, and FRIDAY voice control.
+> **SIH 2026 — Problem Statement 26057**
+> **Theme:** Disaster Management
+> **Category:** Software
+> **Team:** Team Hustlers
 
-## Demo login
-- Admin: `admin@marinevision.ai` / `Admin@12345`
-- Operator: `operator@marinevision.ai` / `Operator@12345`
+An AI-powered **Side-Scan Sonar (SSS) image analysis platform** for detecting underwater marine debris and other man-made anomalies, distinguishing them from natural seabed formations, estimating confidence, geolocating detections, and generating actionable reports.
 
-Demo users are **MongoDB records**, not frontend hardcoded accounts. On non-production startup, `AUTO_SEED_DEMO=true` creates them if missing.
+---
 
-## 1. Configure MongoDB
-Copy `backend/.env.example` to `backend/.env` and set your own Atlas URI:
+## 📌 Problem Statement
 
-```powershell
-cd backend
-copy .env.example .env
+Underwater marine debris such as **ghost nets, pipes, cylinders, containers, shipwrecks and other man-made structures** can pose serious risks to marine biodiversity, coral reefs and vessel operations.
+
+Side-Scan Sonar (SSS) is widely used to map the seafloor, but manually inspecting large volumes of sonar imagery is:
+
+* Time-consuming
+* Labor-intensive
+* Prone to human error
+* Difficult in noisy acoustic environments
+* Challenging when artificial objects resemble natural seabed formations
+
+The objective is to build an end-to-end AI system that can automatically analyze SSS imagery and convert detections into **geo-localized, confidence-scored and actionable anomaly information**.
+
+---
+
+# 💡 Our Solution
+
+We developed a **Sonar-Aware AI pipeline** that combines computer vision with sonar-specific analysis.
+
+```text
+Side-Scan Sonar Image
+          │
+          ▼
+   Image Ingestion
+          │
+          ▼
+ Sonar Preprocessing
+ ┌──────────────────────┐
+ │ Grayscale            │
+ │ Denoising            │
+ │ Normalization        │
+ │ Contrast Enhancement │
+ │ Quality Assessment   │
+ │ Dropout Analysis     │
+ └──────────────────────┘
+          │
+          ▼
+     AI Detection
+          │
+          ▼
+ Acoustic Shadow Analysis
+          │
+          ▼
+ Artificial vs Natural
+      Assessment
+          │
+          ▼
+ Confidence Fusion
+          │
+          ▼
+ Sonar-Based Geolocation
+          │
+          ▼
+ Human Verification
+          │
+          ▼
+ GIS Dashboard
+          │
+          ▼
+ PDF / CSV / JSON / GeoJSON
 ```
 
-Use a MongoDB database user with read/write permissions. Do not commit the real `.env`.
+The key idea is to avoid relying only on raw object-detection confidence. The system also considers **acoustic-shadow evidence, sonar image quality and contextual information** before producing an actionable anomaly.
 
-The previous archive contained live-looking credentials/API tokens. This upgraded package intentionally removes those secrets; enter your own credentials.
+---
 
-## 2. Redis
-BullMQ background jobs require Redis. Start Redis locally or set `REDIS_URL` to a reachable Redis instance.
+# 🚀 Key Features
 
-## 3. Start backend
-```powershell
+### 🔍 AI-Based Object Detection
+
+The system uses a YOLO-based object detection pipeline for identifying underwater objects and anomalies in Side-Scan Sonar imagery.
+
+The deployment pipeline supports:
+
+* PyTorch model
+* ONNX model
+* CPU inference
+* Non-Maximum Suppression
+* Confidence scoring
+* Tiled inference
+
+---
+
+### 🌊 Sonar-Aware Preprocessing
+
+The pipeline is designed specifically for acoustic imagery and includes:
+
+* Grayscale conversion
+* Median denoising
+* Intensity normalization
+* Contrast enhancement
+* Sonar image quality assessment
+* Dropout analysis
+* Nadir-related processing
+* Tiled image inference
+
+---
+
+### 🌑 Acoustic Shadow Analysis
+
+Acoustic shadows are an important characteristic of sonar imagery.
+
+The system analyzes relationships between:
+
+```text
+Bright Acoustic Highlight
+          +
+Dark Acoustic Shadow
+          ↓
+Potential Artificial Structure
+```
+
+Shadow-related evidence is combined with AI detection results to help distinguish artificial objects from natural seabed formations.
+
+---
+
+### 🧠 Artificial vs Natural Assessment
+
+The system estimates:
+
+* Artificial probability
+* Natural probability
+* Shadow score
+* Noise score
+* Model confidence
+* Final confidence
+
+This provides additional context beyond a conventional object detector.
+
+---
+
+### 📍 Sonar-Based Geolocation
+
+When navigation metadata is available, detections can be localized using:
+
+* Latitude
+* Longitude
+* Heading
+* Sonar range
+* Port/starboard information
+* Depth
+* Navigation source
+* Detection position relative to the sonar nadir
+
+The system distinguishes between:
+
+```text
+REAL
+ESTIMATED
+UNAVAILABLE
+```
+
+coordinates instead of fabricating a location when sufficient navigation information is unavailable.
+
+---
+
+### 📏 Object Dimension Estimation
+
+The system estimates physical dimensions from sonar geometry and image coordinates.
+
+These measurements are intended as **estimates for anomaly analysis**, rather than survey-grade measurements.
+
+---
+
+### 🗺️ GIS & Visualization
+
+The web application provides visualization of detected anomalies using:
+
+* Interactive maps
+* GeoJSON
+* GIS layers
+* Sonar image overlays
+* Cesium-based 3D visualization
+* Detection details
+* Survey information
+
+---
+
+### 👨‍🔬 Human-in-the-Loop Verification
+
+Detected anomalies can be reviewed by a human operator.
+
+Supported review states include:
+
+```text
+PENDING_REVIEW
+VERIFIED
+REJECTED
+NEEDS_REVIEW
+```
+
+Review information can include:
+
+* Reviewer
+* Review timestamp
+* Comments
+* Verification status
+
+This allows AI results to be validated before operational use.
+
+---
+
+### 📊 Automated Reporting
+
+The system supports generation of:
+
+* PDF reports
+* CSV reports
+* JSON reports
+* GeoJSON reports
+
+Reports can contain information such as:
+
+```text
+Detection
+Class
+Confidence
+Artificial Probability
+Natural Probability
+Latitude
+Longitude
+Dimensions
+Risk / Review Status
+```
+
+---
+
+# 🏗️ System Architecture
+
+```text
+                    ┌──────────────────────┐
+                    │ Side-Scan Sonar Data │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │ Image / Data Ingest  │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                 ┌──────────────────────────┐
+                 │ Sonar Preprocessing      │
+                 │ • Denoising              │
+                 │ • Normalization          │
+                 │ • Quality Assessment     │
+                 │ • Dropout Detection      │
+                 └────────────┬─────────────┘
+                              │
+                              ▼
+                 ┌──────────────────────────┐
+                 │ YOLO Object Detection    │
+                 └────────────┬─────────────┘
+                              │
+                    ┌─────────┴─────────┐
+                    ▼                   ▼
+          ┌─────────────────┐  ┌──────────────────┐
+          │ Acoustic Shadow │  │ Sonar Context /  │
+          │ Analysis        │  │ Quality Analysis │
+          └────────┬────────┘  └────────┬─────────┘
+                   │                    │
+                   └─────────┬──────────┘
+                             ▼
+                 ┌──────────────────────────┐
+                 │ Confidence Fusion        │
+                 │ Artificial / Natural     │
+                 │ Assessment               │
+                 └────────────┬─────────────┘
+                              │
+                              ▼
+                 ┌──────────────────────────┐
+                 │ Geolocation & Dimensions │
+                 └────────────┬─────────────┘
+                              │
+                              ▼
+                 ┌──────────────────────────┐
+                 │ Human Verification       │
+                 └────────────┬─────────────┘
+                              │
+                              ▼
+                 ┌──────────────────────────┐
+                 │ GIS / Dashboard          │
+                 └────────────┬─────────────┘
+                              │
+                              ▼
+                 ┌──────────────────────────┐
+                 │ Reports                  │
+                 │ PDF / CSV / JSON / GeoJSON│
+                 └──────────────────────────┘
+```
+
+---
+
+# 🧠 AI Pipeline
+
+```text
+Input SSS Image
+      ↓
+Preprocessing
+      ↓
+Image Quality Check
+      ↓
+YOLO Detection
+      ↓
+NMS / Post-processing
+      ↓
+Acoustic Shadow Analysis
+      ↓
+Noise & Context Analysis
+      ↓
+Artificial / Natural Probability
+      ↓
+Confidence Fusion
+      ↓
+Geolocation
+      ↓
+Final Detection Record
+```
+
+---
+
+# 🏷️ Detection Classes
+
+The project architecture supports multiple marine-anomaly categories, including:
+
+* Shipwreck
+* Artificial Structure
+* Rock
+* Marine Debris
+* Container
+* Pipe
+* Cylinder
+* Ghost Net
+
+### Dataset note
+
+The final trained model's validated performance should be interpreted according to the **genuine labeled samples available for each class**. Classes without sufficient representative labeled sonar data should not be presented as fully validated detection classes.
+
+---
+
+# 📚 Dataset
+
+The project uses labeled Side-Scan Sonar imagery for training and evaluation.
+
+The dataset preparation pipeline supports:
+
+* Image validation
+* Annotation validation
+* Duplicate detection
+* Dataset splitting
+* Class distribution analysis
+* YOLO-format annotations
+* Train/validation/test separation
+
+The reduced submission version uses a **balanced representative subset** to satisfy deployment/submission size constraints while maintaining genuine labeled samples and preventing train/test leakage.
+
+---
+
+# 🏋️ Model Training
+
+The project includes an existing YOLO training pipeline.
+
+Training workflow:
+
+```text
+Dataset
+   ↓
+Dataset Validation
+   ↓
+Class Distribution Analysis
+   ↓
+Train / Validation / Test Split
+   ↓
+YOLO Training
+   ↓
+Validation
+   ↓
+Test Evaluation
+   ↓
+Best Model Selection
+   ↓
+ONNX Export
+   ↓
+ONNX Verification
+   ↓
+Deployment
+```
+
+Training can evaluate:
+
+* Precision
+* Recall
+* F1 Score
+* mAP@50
+* mAP@50–95
+* Per-class metrics
+
+---
+
+# ⚡ Edge / CPU Inference
+
+The trained model can be exported to **ONNX** and executed through CPU inference.
+
+This supports the project's goal of reducing dependency on heavy cloud infrastructure and provides a pathway toward resource-constrained marine platforms.
+
+> Current CPU benchmarking should be interpreted as a software inference benchmark, not as proof of deployment on a specific AUV or marine drone hardware platform.
+
+---
+
+# 🖥️ Technology Stack
+
+## AI / Machine Learning
+
+* Python
+* YOLO
+* PyTorch
+* ONNX
+* ONNX Runtime
+* OpenCV
+* NumPy
+
+## Backend
+
+* TypeScript
+* Node.js
+* REST APIs
+* WebSocket / Socket.IO
+* MongoDB
+
+## Frontend
+
+* React
+* TypeScript
+* Interactive GIS maps
+* Cesium 3D visualization
+
+## Data & Geospatial
+
+* GeoJSON
+* Sonar navigation metadata
+* Latitude / Longitude
+* Heading
+* Sonar range
+* Depth information
+
+## Deployment
+
+* Docker
+* ONNX Runtime
+* CPU inference
+
+---
+
+# 📂 Project Structure
+
+```text
+MarineVision-AI/
+│
+├── ai-models/
+│   └── Deployment AI models
+│
+├── backend/
+│   ├── src/
+│   │   └── modules/
+│   │       ├── ai-inference/
+│   │       ├── ai-training/
+│   │       ├── sonar/
+│   │       ├── geolocation/
+│   │       ├── detections/
+│   │       └── reports/
+│   │
+│   └── ai-models/
+│
+├── frontend/
+│   └── React dashboard
+│
+├── models/
+│   └── Trained model artifacts
+│
+├── datasets/
+│   ├── train/
+│   ├── val/
+│   └── test/
+│
+├── training/
+│   ├── train_yolo26x.py
+│   ├── evaluate.py
+│   ├── prepare_dataset.py
+│   └── export_onnx.py
+│
+├── reports/
+│   ├── metrics.json
+│   ├── metrics.csv
+│   ├── per_class_metrics.json
+│   └── training reports
+│
+├── docs/
+│
+├── docker-compose.yml
+├── MODEL_CARD.md
+├── PS_COMPLIANCE.md
+└── README.md
+```
+
+---
+
+# 🔄 End-to-End Workflow
+
+### 1. Upload
+
+Operator uploads Side-Scan Sonar imagery/data.
+
+### 2. Preprocessing
+
+The system improves the sonar image and checks its quality.
+
+### 3. Detection
+
+The YOLO model identifies potential objects/anomalies.
+
+### 4. Sonar-Aware Verification
+
+Acoustic shadows, noise and contextual information are analyzed.
+
+### 5. Confidence Fusion
+
+The system combines AI and sonar evidence into a final confidence assessment.
+
+### 6. Geolocation
+
+Navigation metadata and sonar geometry are used to estimate the anomaly's geographic position.
+
+### 7. Human Review
+
+An operator can verify or reject the detection.
+
+### 8. Visualization
+
+The anomaly is displayed on the GIS dashboard.
+
+### 9. Reporting
+
+The operator can export structured anomaly reports.
+
+---
+
+# 🎯 Key Innovation
+
+The project's primary innovation is not simply applying a generic object detector to sonar images.
+
+It combines:
+
+```text
+AI Detection
+      +
+Sonar-Aware Preprocessing
+      +
+Acoustic Shadow Analysis
+      +
+Artificial vs Natural Assessment
+      +
+Confidence Fusion
+      +
+Geolocation
+      +
+Human Verification
+      +
+Actionable Reporting
+```
+
+### USP
+
+> **From noisy Side-Scan Sonar imagery to actionable, geo-localized marine anomaly intelligence.**
+
+---
+
+# 🌊 Potential Applications
+
+The system can support:
+
+* Marine debris surveys
+* Ghost-net identification workflows
+* Underwater infrastructure inspection
+* Shipwreck detection
+* Seafloor anomaly surveys
+* Marine environmental monitoring
+* AUV-assisted surveys
+* Research vessel surveys
+* Coastal and marine management
+* Disaster and emergency response
+
+---
+
+# 📈 Expected Benefits
+
+### 🌊 Environmental Protection
+
+Helps identify potential marine debris and underwater hazards more efficiently.
+
+### ⚓ Safer Marine Operations
+
+Can assist in identifying objects that may pose risks to vessels or underwater operations.
+
+### ⏱️ Faster Survey Analysis
+
+Automates parts of the manual sonar-image inspection process.
+
+### 📍 Actionable Localization
+
+Converts detections into geographically referenced anomaly information.
+
+### 📊 Structured Decision Support
+
+Provides confidence, classification and reporting information for human review.
+
+### 🤖 Edge-Ready Architecture
+
+ONNX-based inference provides a pathway toward resource-constrained deployment.
+
+---
+
+# ⚠️ Current Limitations
+
+The project is designed as an AI-assisted sonar analysis system, and several limitations should be considered:
+
+* Detection quality depends on the availability and diversity of labeled Side-Scan Sonar data.
+* Rare marine-debris classes require representative labeled samples for reliable supervised training.
+* Estimated object dimensions are not a substitute for survey-grade measurements.
+* Geolocation quality depends on available navigation metadata.
+* Full physical image-level compensation for all heave/pitch/roll effects is an area for further development.
+* Production-grade parsing of every proprietary raw sonar-log format requires dedicated format-specific integration.
+* AI predictions should be reviewed by qualified operators before operational decisions.
+
+---
+
+# 🔬 Future Scope
+
+Future improvements can include:
+
+* Larger multi-survey sonar datasets
+* More representative ghost-net and marine-debris samples
+* Cross-sensor/domain validation
+* Improved rare-class detection
+* Semantic segmentation
+* Advanced motion compensation
+* Native XTF/JSF processing
+* Multi-sensor fusion
+* Improved sonar geolocation
+* AUV/edge-device deployment
+* Continuous human-in-the-loop learning
+* Active-learning based dataset expansion
+
+---
+
+# 🧪 Evaluation
+
+The project includes an evaluation pipeline for measuring:
+
+```text
+Precision
+Recall
+F1 Score
+mAP@50
+mAP@50–95
+Per-class performance
+ONNX verification
+Inference performance
+```
+
+Use the **latest generated metrics from the final reduced submission** here rather than hard-coding older model results.
+
+Example:
+
+| Metric        | Final Model |
+| ------------- | ----------: |
+| Precision     |       `XX%` |
+| Recall        |       `XX%` |
+| F1 Score      |       `XX%` |
+| mAP@50        |       `XX%` |
+| mAP@50–95     |       `XX%` |
+| CPU Inference |     `XX ms` |
+
+---
+
+# 🛠️ Installation
+
+## Clone the repository
+
+```bash
+git clone <YOUR_GITHUB_REPOSITORY_URL>
+cd MarineVision-AI
+```
+
+## Backend
+
+```bash
 cd backend
 npm install
-npm run build
-npm run seed:historical
-npm run start:dev
 ```
 
-The API is `http://127.0.0.1:4000/api` and Swagger is `/api/docs`.
+Configure the required environment variables:
 
-## 4. Start frontend
-```powershell
+```env
+MONGODB_URI=<your-mongodb-uri>
+PORT=<backend-port>
+```
+
+Then start the backend using the project's configured start command.
+
+---
+
+## Frontend
+
+```bash
 cd frontend
 npm install
-npm run dev
 ```
 
-Open `http://127.0.0.1:5173`.
+Configure the frontend environment according to the project's existing configuration and start the application.
 
-## FRIDAY
-FRIDAY now uses a **server-side ElevenLabs gateway**:
-- Voice → Scribe v2 transcription → intent parsing → permission-aware command execution.
-- Text → ElevenLabs TTS.
-- Voice → command → ElevenLabs female voice response.
-- Typed commands remain supported.
-- Browser TTS is only a fallback if ElevenLabs is unavailable.
-- The API key is never exposed in the frontend.
+---
 
-Set `ELEVENLABS_API_KEY` and optionally replace `ELEVENLABS_VOICE_ID` with a female voice from your ElevenLabs account.
+# 🐳 Docker
 
-## Globe data model
-The globe reads its markers from MongoDB. Historical records are explicitly labelled `HISTORICAL_REFERENCE`; they are not presented as fresh AI detections.
+The project includes Docker configuration for running the application components.
 
-The seed contains:
-- Titanic wreck reference and coordinates from NOAA expedition material.
-- 2021–2025 documented marine debris / lost-container / sunken-vessel references.
-- Ghost-net / derelict-fishing-gear concepts are represented as the `FISHING_GEAR` class where a documented coordinate source is available.
-- Every historical marker stores source organization, source URL, year, coordinate accuracy, quantity when available, and notes.
+```bash
+docker compose up --build
+```
 
-The 5-year historical layer is a **2021–2025 reference collection**, while Titanic is kept as a separate heritage/wreck reference because it predates that window.
+Use the existing project configuration for database, backend, frontend and supporting services.
 
-## AI pipeline
-1. Upload sonar images/logs.
-2. Quality checks + grayscale/median/normalization preprocessing.
-3. Tiled inference for large sonar images.
-4. Real ONNX YOLO-family inference when `ONNX_MODEL_PATH` points to a trained model.
-5. If no model is installed, the system explicitly labels the pixel heuristic as a baseline; it is never claimed to be AI accuracy.
-6. Detection confidence + shadow/noise fusion + risk classification.
-7. Coordinates are sourced from navigation metadata or explicitly marked estimated/unavailable.
-8. Reports export structured geotagged anomalies.
+---
 
-### 1000+ image evaluation
-The dataset UI accepts selecting 1000+ images in one browser action. Upload is automatically chunked into small requests to avoid exhausting browser/server RAM. Labelled datasets can be split 70/15/15 and trained/evaluated in MongoDB-backed jobs.
+# 📊 Example Output
 
-The resulting accuracy, macro precision/recall/F1, confusion matrix, per-class support, and latency are computed from the held-out images. The current built-in trainer is a lightweight whole-image classifier; it does **not** fabricate mAP. For true bounding-box mAP50/mAP50-95, provide a trained YOLO ONNX model and matching detection annotations.
+A detected anomaly can contain information such as:
 
-## Important distinction
-A historical marker is a documented reference, not proof that an object is currently on the seafloor. An AI detection is only created from an uploaded/processed sonar frame. This prevents demo data from being confused with current observations.
+```json
+{
+  "class": "marine_debris",
+  "confidence": 87.4,
+  "artificialProbability": 91.2,
+  "naturalProbability": 8.8,
+  "shadowScore": 84.6,
+  "latitude": 16.XXXX,
+  "longitude": 73.XXXX,
+  "status": "PENDING_REVIEW"
+}
+```
+
+> Example structure only; actual values are generated by the running system.
+
+---
+
+# 🏆 SIH 2026 Alignment
+
+**Problem Statement:** SIH26057
+
+**Title:** AI-Powered Automated Underwater Marine Debris and Anomaly Detection System using Side-Scan Sonar Imagery
+
+| Requirement                      | Implementation |
+| -------------------------------- | -------------- |
+| SSS imagery processing           | ✅              |
+| AI object detection              | ✅              |
+| Sonar-aware preprocessing        | ✅              |
+| Acoustic-shadow analysis         | ✅              |
+| Artificial vs natural assessment | ✅              |
+| Confidence scoring               | ✅              |
+| Geolocation                      | ✅              |
+| Dimension estimation             | ✅              |
+| GIS visualization                | ✅              |
+| Human verification               | ✅              |
+| Realtime updates                 | ✅              |
+| PDF/CSV/JSON/GeoJSON reports     | ✅              |
+| ONNX inference                   | ✅              |
+| Model evaluation                 | ✅              |
+| Edge/CPU inference capability    | ✅              |
+
+---
+
+# 👥 Team
+
+## TEAM HUSTLERS
+
+**Smart India Hackathon 2026**
+
+**Problem Statement:** 26057
+**Theme:** Disaster Management
+**Category:** Software
+
+---
+
+# 📜 Disclaimer
+
+This project is an AI-assisted marine sonar analysis system. AI-generated detections are intended to support human operators and should be validated before being used for safety-critical, environmental or operational decisions.
+
+---
+
+# ⭐ Project Vision
+
+> **Making underwater sonar analysis faster, smarter and more actionable — from acoustic imagery to geo-localized marine intelligence.**
+
+
+# 📄 License
+
+This project is licensed under the MIT License.
+
