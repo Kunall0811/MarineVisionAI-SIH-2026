@@ -1,0 +1,24 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: marinevision-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - marinevision_mongo:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: marinevision
+
+  redis:
+    image: redis:7-alpine
+    container_name: marinevision-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - marinevision_redis:/data
+
+volumes:
+  marinevision_mongo:
+  marinevision_redis:

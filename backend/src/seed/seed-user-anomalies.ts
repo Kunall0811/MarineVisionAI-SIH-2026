@@ -1,0 +1,462 @@
+import { connect, disconnect, model, Types } from 'mongoose';
+import { Detection, DetectionSchema } from '../modules/detections/schemas/detection.schema';
+import { HistoricalReference, HistoricalReferenceSchema } from '../modules/historical/schemas/historical-reference.schema';
+import { Survey, SurveySchema } from '../modules/surveys/schemas/survey.schema';
+
+export const USER_TARGET_DATA = [
+  {
+    anomalyCode: 'ANOM-01',
+    targetName: 'San Delfino',
+    detailedType: 'Tanker wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 35.39779,
+    longitude: -75.11609,
+    depthFt: '110 ft',
+    depthMeters: 33.5,
+    sonarEvidence: 'Side-scan sonar survey',
+    riskLevel: 'HIGH',
+    confidence: 0.942,
+    year: 1942,
+    dimensions: { length: 140, width: 22, height: 12 },
+  },
+  {
+    anomalyCode: 'ANOM-02',
+    targetName: 'F.W. Abrams',
+    detailedType: 'Tanker wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 34.99012,
+    longitude: -75.80100,
+    depthFt: '85 ft',
+    depthMeters: 25.9,
+    sonarEvidence: 'Side-scan sonar',
+    riskLevel: 'HIGH',
+    confidence: 0.894,
+    year: 1942,
+    dimensions: { length: 135, width: 20, height: 10 },
+  },
+  {
+    anomalyCode: 'ANOM-03',
+    targetName: 'Papoose',
+    detailedType: 'Tanker wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 35.62599,
+    longitude: -74.89110,
+    depthFt: '200 ft',
+    depthMeters: 61.0,
+    sonarEvidence: 'Side-scan sonar',
+    riskLevel: 'MEDIUM',
+    confidence: 0.867,
+    year: 1942,
+    dimensions: { length: 125, width: 18, height: 9 },
+  },
+  {
+    anomalyCode: 'ANOM-04',
+    targetName: 'Kyzikes',
+    detailedType: 'Tanker wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 36.06464,
+    longitude: -75.66833,
+    depthFt: '20 ft',
+    depthMeters: 6.1,
+    sonarEvidence: 'Side-scan sonar',
+    riskLevel: 'CRITICAL', // 20 ft shallow water hazard
+    confidence: 0.965,
+    year: 1927,
+    dimensions: { length: 118, width: 16, height: 5 },
+  },
+  {
+    anomalyCode: 'ANOM-05',
+    targetName: 'Suloide',
+    detailedType: 'Freighter wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 34.54479,
+    longitude: -76.89499,
+    depthFt: '65 ft',
+    depthMeters: 19.8,
+    sonarEvidence: 'Side-scan + multibeam',
+    riskLevel: 'HIGH',
+    confidence: 0.918,
+    year: 1943,
+    dimensions: { length: 100, width: 15, height: 8 },
+  },
+  {
+    anomalyCode: 'ANOM-06',
+    targetName: 'Marore',
+    detailedType: 'Freighter wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 35.54410,
+    longitude: -75.24941,
+    depthFt: '130 ft',
+    depthMeters: 39.6,
+    sonarEvidence: 'Side-scan sonar',
+    riskLevel: 'HIGH',
+    confidence: 0.883,
+    year: 1942,
+    dimensions: { length: 160, width: 24, height: 14 },
+  },
+  {
+    anomalyCode: 'ANOM-07',
+    targetName: 'Panam',
+    detailedType: 'Tanker wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 34.14424,
+    longitude: -76.13006,
+    depthFt: '480 ft',
+    depthMeters: 146.3,
+    sonarEvidence: 'Side-scan sonar',
+    riskLevel: 'LOW',
+    confidence: 0.846,
+    year: 1942,
+    dimensions: { length: 145, width: 21, height: 12 },
+  },
+  {
+    anomalyCode: 'ANOM-08',
+    targetName: 'Norvana',
+    detailedType: 'Freighter wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 36.06721,
+    longitude: -75.22749,
+    depthFt: '110 ft',
+    depthMeters: 33.5,
+    sonarEvidence: 'Low-frequency side-scan',
+    riskLevel: 'HIGH',
+    confidence: 0.931,
+    year: 1942,
+    dimensions: { length: 95, width: 14, height: 7 },
+  },
+  {
+    anomalyCode: 'ANOM-09',
+    targetName: 'Malchace',
+    detailedType: 'Freighter wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 34.60427,
+    longitude: -75.78703,
+    depthFt: '205 ft',
+    depthMeters: 62.5,
+    sonarEvidence: 'Multibeam + side-scan',
+    riskLevel: 'MEDIUM',
+    confidence: 0.875,
+    year: 1942,
+    dimensions: { length: 105, width: 15, height: 8 },
+  },
+  {
+    anomalyCode: 'ANOM-10',
+    targetName: 'Tamaulipas',
+    detailedType: 'Tanker wreck / broken sections',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 34.53880,
+    longitude: -76.01559,
+    depthFt: '155 ft',
+    depthMeters: 47.2,
+    sonarEvidence: 'Side-scan + video',
+    riskLevel: 'HIGH',
+    confidence: 0.923,
+    year: 1942,
+    dimensions: { length: 130, width: 19, height: 9 },
+  },
+  {
+    anomalyCode: 'ANOM-11',
+    targetName: 'SS Bluefields',
+    detailedType: 'Freighter wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 34.76211,
+    longitude: -75.50496,
+    depthFt: '~750 ft',
+    depthMeters: 228.6,
+    sonarEvidence: 'Side-scan + high-resolution multibeam',
+    riskLevel: 'MEDIUM',
+    confidence: 0.859,
+    year: 1942,
+    dimensions: { length: 80, width: 13, height: 7 },
+  },
+  {
+    anomalyCode: 'ANOM-12',
+    targetName: 'Unknown fishing trawler',
+    detailedType: 'Trawler wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 42.33500,
+    longitude: -70.31500,
+    depthFt: '105–110 ft',
+    depthMeters: 32.5,
+    sonarEvidence: 'Side-scan + multibeam',
+    riskLevel: 'HIGH',
+    confidence: 0.794,
+    year: 1978,
+    dimensions: { length: 32, width: 8, height: 5 },
+  },
+  {
+    anomalyCode: 'ANOM-13',
+    targetName: 'Edna G',
+    detailedType: 'Fishing vessel wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 42.36800,
+    longitude: -70.34200,
+    depthFt: '>300 ft',
+    depthMeters: 91.4,
+    sonarEvidence: 'Side-scan + ROV',
+    riskLevel: 'MEDIUM',
+    confidence: 0.887,
+    year: 1972,
+    dimensions: { length: 28, width: 7, height: 4 },
+  },
+  {
+    anomalyCode: 'ANOM-14',
+    targetName: 'Mystery Collier',
+    detailedType: 'Wooden schooner wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 42.41500,
+    longitude: -70.38500,
+    depthFt: '>400 ft',
+    depthMeters: 122.0,
+    sonarEvidence: 'Side-scan + ROV',
+    riskLevel: 'MEDIUM',
+    confidence: 0.826,
+    year: 1902,
+    dimensions: { length: 65, width: 11, height: 6 },
+  },
+  {
+    anomalyCode: 'ANOM-15',
+    targetName: 'Uncharted obstruction / possible wreckage',
+    detailedType: 'Seafloor obstruction',
+    class: 'unknown_anomaly',
+    histType: 'OTHER',
+    latitude: 37.83300,
+    longitude: -75.20900,
+    depthFt: '~47 ft',
+    depthMeters: 14.3,
+    sonarEvidence: 'Side-scan sonar',
+    riskLevel: 'CRITICAL', // 47 ft uncharted shallow navigation hazard
+    confidence: 0.952,
+    year: 2019,
+    dimensions: { length: 18, width: 12, height: 4 },
+  },
+  {
+    anomalyCode: 'ANOM-16',
+    targetName: 'Heroic',
+    detailedType: 'Fishing vessel / former minesweeper wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 42.37260,
+    longitude: -70.36982,
+    depthFt: '~100 ft',
+    depthMeters: 30.5,
+    sonarEvidence: 'Side-scan/underwater survey; large engine, hull fragments, trawl winch, anchor and chain',
+    riskLevel: 'HIGH',
+    confidence: 0.938,
+    year: 1969,
+    dimensions: { length: 45, width: 9, height: 6 },
+  },
+  {
+    anomalyCode: 'ANOM-17',
+    targetName: 'Patriot',
+    detailedType: 'Steel fishing vessel wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 42.40427,
+    longitude: -70.45328,
+    depthFt: '~100 ft',
+    depthMeters: 30.5,
+    sonarEvidence: 'Wreck target lying on starboard side; fishing-net/ gear hazards',
+    riskLevel: 'CRITICAL', // Contains fishing net / ghost gear entanglement hazard
+    confidence: 0.904,
+    year: 2009,
+    dimensions: { length: 22, width: 6, height: 4 },
+  },
+  {
+    anomalyCode: 'ANOM-18',
+    targetName: 'Josephine Marie',
+    detailedType: 'Steel stern trawler wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 42.18208,
+    longitude: -70.22443,
+    depthFt: '105 ft',
+    depthMeters: 32.0,
+    sonarEvidence: 'Side-scan sonar image; inverted wreck with machinery and fishing gear',
+    riskLevel: 'HIGH',
+    confidence: 0.872,
+    year: 1992,
+    dimensions: { length: 26, width: 7, height: 5 },
+  },
+  {
+    anomalyCode: 'ANOM-19',
+    targetName: 'Unidentified Trawler',
+    detailedType: 'Unknown steel trawler',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 42.31218,
+    longitude: -70.29738,
+    depthFt: '105–110 ft',
+    depthMeters: 32.8,
+    sonarEvidence: 'Side-scan shows wreck broken into major sections; multibeam confirms structure',
+    riskLevel: 'HIGH',
+    confidence: 0.815,
+    year: 1985,
+    dimensions: { length: 30, width: 8, height: 5 },
+  },
+  {
+    anomalyCode: 'ANOM-20',
+    targetName: 'Bluefields',
+    detailedType: 'WWII freighter wreck',
+    class: 'shipwreck',
+    histType: 'SHIPWRECK',
+    latitude: 34.76211,
+    longitude: -75.50496,
+    depthFt: '750 ft',
+    depthMeters: 228.6,
+    sonarEvidence: 'Side-scan + high-resolution multibeam; largely intact steel hull with fallen masts/ cargo booms',
+    riskLevel: 'MEDIUM',
+    confidence: 0.947,
+    year: 1942,
+    dimensions: { length: 80, width: 13, height: 7 },
+  },
+];
+
+export async function seedUserAnomalies(mongoUri: string = 'mongodb://127.0.0.1:27017/marinevision') {
+  console.log('Connecting to MongoDB at:', mongoUri);
+  await connect(mongoUri);
+
+  const DetectionModel = model<any>('Detection', DetectionSchema);
+  const HistoricalModel = model<any>('HistoricalReference', HistoricalReferenceSchema);
+  const SurveyModel = model<any>('Survey', SurveySchema);
+
+  // Find admin user for createdBy
+  const adminUser = await connect.prototype ? null : null;
+  const userCol = DetectionModel.db.collection('users');
+  const adminDoc = await userCol.findOne({ role: 'ADMIN' });
+  const createdBy = adminDoc?._id || new Types.ObjectId();
+
+  // 1. Ensure Historical NOAA Sanctuary Survey exists
+  let survey = await SurveyModel.findOne({ code: 'SURV-HIST-NOAA' });
+  if (!survey) {
+    survey = await SurveyModel.create({
+      code: 'SURV-HIST-NOAA',
+      name: 'NOAA & Stellwagen Bank Side-Scan Sonar Target Survey',
+      description: 'Historical verified sonar anomalies along US East Coast & Stellwagen Bank Sanctuary',
+      waterBodyName: 'North Atlantic Ocean / Stellwagen Bank',
+      region: 'US East Coast / Massachusetts Bay',
+      status: 'COMPLETED',
+      dataType: 'HISTORICAL',
+      createdBy,
+      totalFrames: USER_TARGET_DATA.length,
+      processedFrames: USER_TARGET_DATA.length,
+      failedFrames: 0,
+      route: {
+        type: 'LineString',
+        coordinates: [
+          [-76.89499, 34.54479],
+          [-75.80100, 34.99012],
+          [-75.11609, 35.39779],
+          [-75.24941, 35.54410],
+          [-74.89110, 35.62599],
+          [-75.66833, 36.06464],
+          [-75.20900, 37.83300],
+          [-70.22443, 42.18208],
+          [-70.29738, 42.31218],
+          [-70.36982, 42.37260],
+          [-70.45328, 42.40427],
+        ],
+      },
+    });
+    console.log('Created historical survey:', survey.code);
+  }
+
+  // 2. Upsert into detections collection (Anomalies)
+  let anomaliesUpserted = 0;
+  for (const t of USER_TARGET_DATA) {
+    const doc = {
+      surveyId: survey._id,
+      sonarFrameId: new Types.ObjectId(),
+      anomalyCode: t.anomalyCode,
+      targetName: t.targetName,
+      detailedType: t.detailedType,
+      class: t.class,
+      confidence: t.confidence || 0.92,
+      finalConfidence: t.confidence || 0.92,
+      latitude: t.latitude,
+      longitude: t.longitude,
+      depth: t.depthMeters,
+      depthFt: t.depthFt,
+      sonarEvidence: t.sonarEvidence,
+      length: t.dimensions.length,
+      width: t.dimensions.width,
+      height: t.dimensions.height,
+      riskLevel: t.riskLevel,
+      status: 'VERIFIED',
+      locationStatus: 'REAL',
+      dataType: 'HISTORICAL',
+      coordinateSource: 'HISTORICAL_DATASET',
+      historicalSource: `NOAA Sanctuary Maritime Heritage Archive · ${t.sonarEvidence}`,
+      modelVersion: 'marine-yolo-v1-verified',
+      bbox: { x1: 120, y1: 140, x2: 480, y2: 420 },
+      location: {
+        type: 'Point',
+        coordinates: [t.longitude, t.latitude],
+      },
+    };
+
+    await DetectionModel.findOneAndUpdate(
+      { anomalyCode: t.anomalyCode },
+      { $set: doc },
+      { upsert: true, new: true },
+    );
+    anomaliesUpserted++;
+  }
+  console.log(`Upserted ${anomaliesUpserted} anomalies into 'detections' collection.`);
+
+  // 3. Upsert into historical_references collection
+  let histUpserted = 0;
+  for (const t of USER_TARGET_DATA) {
+    const sourceId = `NOAA-${t.anomalyCode}-${t.targetName.toUpperCase().replace(/[^A-Z0-9]+/g, '-')}`;
+    const histDoc = {
+      sourceId,
+      name: `${t.targetName} (${t.detailedType})`,
+      type: t.histType,
+      eventYear: t.year || 1942,
+      eventDate: `${t.year || 1942}-06-15`,
+      latitude: t.latitude,
+      longitude: t.longitude,
+      depthMeters: t.depthMeters,
+      quantity: 1,
+      description: `Target ${t.anomalyCode}: ${t.targetName}. Type: ${t.detailedType}. Depth: ${t.depthFt} (${t.depthMeters}m). Sonar evidence: ${t.sonarEvidence}. Risk level: ${t.riskLevel}.`,
+      sourceOrganization: 'NOAA Office of Coast Survey & National Marine Sanctuaries',
+      sourceUrl: 'https://sanctuaries.noaa.gov/maritime/',
+      coordinateAccuracy: 'EXACT',
+      dataStatus: 'HISTORICAL_REFERENCE',
+      tags: ['sonar', 'side-scan', 'wreck', t.anomalyCode.toLowerCase(), t.class],
+    };
+
+    await HistoricalModel.findOneAndUpdate(
+      { sourceId },
+      { $set: histDoc },
+      { upsert: true, new: true },
+    );
+    histUpserted++;
+  }
+  console.log(`Upserted ${histUpserted} records into 'historical_references' collection.`);
+
+  await disconnect();
+  console.log('Finished seeding user anomalies successfully!');
+}
+
+if (require.main === module) {
+  const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/marinevision';
+  seedUserAnomalies(uri).catch((err) => {
+    console.error('Seeding failed:', err);
+    process.exit(1);
+  });
+}
