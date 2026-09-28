@@ -819,7 +819,7 @@ This project is an AI-assisted marine sonar analysis system. AI-generated detect
 
 ---
 
-# 📄 License
+## 📄 License
 
 This project is licensed under the MIT License.
 
