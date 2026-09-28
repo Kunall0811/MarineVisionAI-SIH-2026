@@ -1,9 +1,10 @@
 # AI-Powered Automated Underwater Marine Debris & Anomaly Detection System
 
 > **SIH 2026 — Problem Statement 26057**
+
 > **Theme:** Disaster Management
+
 > **Category:** Software
-> **Team:** Team Hustlers
 
 An AI-powered **Side-Scan Sonar (SSS) image analysis platform** for detecting underwater marine debris and other man-made anomalies, distinguishing them from natural seabed formations, estimating confidence, geolocating detections, and generating actionable reports.
 
@@ -797,8 +798,12 @@ A detected anomaly can contain information such as:
 **Smart India Hackathon 2026**
 
 **Problem Statement:** 26057
+
 **Theme:** Disaster Management
+
 **Category:** Software
+
+**Organization:** Ministry of Earth Sciences (MoES) 
 
 ---
 
