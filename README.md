@@ -817,6 +817,7 @@ This project is an AI-assisted marine sonar analysis system. AI-generated detect
 
 > **Making underwater sonar analysis faster, smarter and more actionable — from acoustic imagery to geo-localized marine intelligence.**
 
+---
 
 # 📄 License
 
