@@ -238,7 +238,7 @@ Risk / Review Status
 
 ---
 
-# 🏗️ System Architecture
+## 🏗️ System Architecture
 
 ```text
                     ┌──────────────────────┐
@@ -303,7 +303,7 @@ Risk / Review Status
 
 ---
 
-# 🧠 AI Pipeline
+## 🧠 AI Pipeline
 
 ```text
 Input SSS Image
@@ -331,7 +331,7 @@ Final Detection Record
 
 ---
 
-# 🏷️ Detection Classes
+## 🏷️ Detection Classes
 
 The project architecture supports multiple marine-anomaly categories, including:
 
@@ -350,7 +350,7 @@ The final trained model's validated performance should be interpreted according 
 
 ---
 
-# 📚 Dataset
+## 📚 Dataset
 
 The project uses labeled Side-Scan Sonar imagery for training and evaluation.
 
@@ -368,7 +368,7 @@ The reduced submission version uses a **balanced representative subset** to sati
 
 ---
 
-# 🏋️ Model Training
+## 🏋️ Model Training
 
 The project includes an existing YOLO training pipeline.
 
@@ -409,7 +409,7 @@ Training can evaluate:
 
 ---
 
-# ⚡ Edge / CPU Inference
+## ⚡ Edge / CPU Inference
 
 The trained model can be exported to **ONNX** and executed through CPU inference.
 
@@ -419,9 +419,9 @@ This supports the project's goal of reducing dependency on heavy cloud infrastru
 
 ---
 
-# 🖥️ Technology Stack
+## 🖥️ Technology Stack
 
-## AI / Machine Learning
+### AI / Machine Learning
 
 * Python
 * YOLO
@@ -431,7 +431,7 @@ This supports the project's goal of reducing dependency on heavy cloud infrastru
 * OpenCV
 * NumPy
 
-## Backend
+### Backend
 
 * TypeScript
 * Node.js
@@ -439,14 +439,14 @@ This supports the project's goal of reducing dependency on heavy cloud infrastru
 * WebSocket / Socket.IO
 * MongoDB
 
-## Frontend
+### Frontend
 
 * React
 * TypeScript
 * Interactive GIS maps
 * Cesium 3D visualization
 
-## Data & Geospatial
+### Data & Geospatial
 
 * GeoJSON
 * Sonar navigation metadata
@@ -455,7 +455,7 @@ This supports the project's goal of reducing dependency on heavy cloud infrastru
 * Sonar range
 * Depth information
 
-## Deployment
+### Deployment
 
 * Docker
 * ONNX Runtime
@@ -463,7 +463,7 @@ This supports the project's goal of reducing dependency on heavy cloud infrastru
 
 ---
 
-# 📂 Project Structure
+## 📂 Project Structure
 
 ```text
 MarineVision-AI/
@@ -516,7 +516,7 @@ MarineVision-AI/
 
 ---
 
-# 🔄 End-to-End Workflow
+## 🔄 End-to-End Workflow
 
 ### 1. Upload
 
@@ -556,7 +556,7 @@ The operator can export structured anomaly reports.
 
 ---
 
-# 🎯 Key Innovation
+## 🎯 Key Innovation
 
 The project's primary innovation is not simply applying a generic object detector to sonar images.
 
@@ -586,7 +586,7 @@ Actionable Reporting
 
 ---
 
-# 🌊 Potential Applications
+## 🌊 Potential Applications
 
 The system can support:
 
@@ -603,7 +603,7 @@ The system can support:
 
 ---
 
-# 📈 Expected Benefits
+## 📈 Expected Benefits
 
 ### 🌊 Environmental Protection
 
@@ -631,7 +631,7 @@ ONNX-based inference provides a pathway toward resource-constrained deployment.
 
 ---
 
-# ⚠️ Current Limitations
+## ⚠️ Current Limitations
 
 The project is designed as an AI-assisted sonar analysis system, and several limitations should be considered:
 
@@ -645,7 +645,7 @@ The project is designed as an AI-assisted sonar analysis system, and several lim
 
 ---
 
-# 🔬 Future Scope
+## 🔬 Future Scope
 
 Future improvements can include:
 
@@ -664,7 +664,7 @@ Future improvements can include:
 
 ---
 
-# 🧪 Evaluation
+## 🧪 Evaluation
 
 The project includes an evaluation pipeline for measuring:
 
@@ -694,16 +694,16 @@ Example:
 
 ---
 
-# 🛠️ Installation
+## 🛠️ Installation
 
-## Clone the repository
+### Clone the repository
 
 ```bash
 git clone <YOUR_GITHUB_REPOSITORY_URL>
 cd MarineVision-AI
 ```
 
-## Backend
+### Backend
 
 ```bash
 cd backend
@@ -721,7 +721,7 @@ Then start the backend using the project's configured start command.
 
 ---
 
-## Frontend
+### Frontend
 
 ```bash
 cd frontend
@@ -732,7 +732,7 @@ Configure the frontend environment according to the project's existing configura
 
 ---
 
-# 🐳 Docker
+## 🐳 Docker
 
 The project includes Docker configuration for running the application components.
 
@@ -744,7 +744,7 @@ Use the existing project configuration for database, backend, frontend and suppo
 
 ---
 
-# 📊 Example Output
+## 📊 Example Output
 
 A detected anomaly can contain information such as:
 
@@ -765,7 +765,7 @@ A detected anomaly can contain information such as:
 
 ---
 
-# 🏆 SIH 2026 Alignment
+## 🏆 SIH 2026 Alignment: HIGH (~85%)
 
 **Problem Statement:** SIH26057
 
@@ -791,9 +791,9 @@ A detected anomaly can contain information such as:
 
 ---
 
-# 👥 Team
+## 👥 Team
 
-## TEAM HUSTLERS
+### TEAM HUSTLERS
 
 **Smart India Hackathon 2026**
 
@@ -807,13 +807,13 @@ A detected anomaly can contain information such as:
 
 ---
 
-# 📜 Disclaimer
+## 📜 Disclaimer
 
 This project is an AI-assisted marine sonar analysis system. AI-generated detections are intended to support human operators and should be validated before being used for safety-critical, environmental or operational decisions.
 
 ---
 
-# ⭐ Project Vision
+## ⭐ Project Vision
 
 > **Making underwater sonar analysis faster, smarter and more actionable — from acoustic imagery to geo-localized marine intelligence.**
 
