@@ -1,4 +1,4 @@
-# AI-Powered Automated Underwater Marine Debris & Anomaly Detection System
+# 🪼 MarineVisionAI
 
 > **SIH 2026 — Problem Statement 26057**
 
