@@ -1,4 +1,4 @@
-# 🪼 MarineVisionAI
+# 🌊 MarineVisionAI
 
 > **SIH 2026 — Problem Statement 26057**
 
